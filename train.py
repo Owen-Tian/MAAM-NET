@@ -90,7 +90,7 @@ def train(training_raw,max_epoch, start_model_idx=0, batch_size=18,mem_capacity=
 
     with tf.control_dependencies(update_op):
         optim = tf.train.AdamOptimizer(learning_rate=learning_rates, beta1=0.9, beta2=0.999, name='AdamOp').minimize(loss)
-        optim_wo_mem=tf.train.AdamOptimizer(learning_rate=learning_rates, beta1=0.9, beta2=0.999, name='AdamOp2').minimize(loss_wo_mem)
+        #optim_wo_mem=tf.train.AdamOptimizer(learning_rate=learning_rates, beta1=0.9, beta2=0.999, name='AdamOp2').minimize(loss_wo_mem)
     init_op = tf.global_variables_initializer()
 
     var_lists=[var for var in tf.global_variables() if 'moving' in var.name]
@@ -151,20 +151,17 @@ def train(training_raw,max_epoch, start_model_idx=0, batch_size=18,mem_capacity=
                 _,_1,loss_detail,recons_images_details,loss_recons_image_details,s ,\
                         loss_recons_image_batch_details,recons_flows_details,\
                             loss_recons_flow_details,loss_latent_details,\
-                                loss_sparsity_details,loss_wo_mem_details,\
-                                    loss_recons_image_wo_mem_details,\
-                                        loss_recons_flow_wo_mem_details= \
-                            sess.run([optim, optim_wo_mem, loss, recons_images,loss_recons_image,sims,\
+                                loss_sparsity_details= \
+                            sess.run([optim, loss, recons_images,loss_recons_image,sims,\
                                         loss_recons_image_batch,recons_flows,loss_recons_flow,\
-                                            loss_latent,loss_sparsity,loss_wo_mem,\
-                                                loss_recons_image_wo_mem,loss_recons_flow_wo_mem],
+                                            loss_latent,loss_sparsity],
                          
                                              feed_dict={inputs_images : for_feed_images,
                                                         inputs_flows  : for_feed_flows                                                       
                                                         })
                 print('epoch %d/%d, iter %3d/%d: loss = %.8f,loss_flow=%.8f, loss_image = %.8f,loss_sparsity=%.8f,loss_latent=%.8f'
                       % (i+1, max_epoch, j+1, training_raw.max_index, loss_detail, loss_recons_flow_details,loss_recons_image_details,loss_sparsity_details,loss_latent_details))
-                print('\t loss_wo_mem=%.8f,loss_flow_wo_mem=%.8f,loss_image_wo_mem=%.8f' %(loss_wo_mem_details,loss_recons_flow_details,loss_recons_image_details))
+                #print('\t loss_wo_mem=%.8f,loss_flow_wo_mem=%.8f,loss_image_wo_mem=%.8f' %(loss_wo_mem_details,loss_recons_flow_details,loss_recons_image_details))
                 total_loss=np.append(total_loss,loss_detail)
                 #this is for see how much item are used from memory,when divided by z.shape[0:3]
                 print('>>>>>',int(np.sum(s>0)/(batch_size*int(z.shape[1])*int(z.shape[2]))),'<<<<<')

@@ -1,5 +1,7 @@
 # coding: utf-8
 
+# Code is partly from "T.-N. Nguyen and J. Meunier, “Anomaly detection in video sequence with appearance-motion correspondence,” in Proc. IEEE Int. Conf. Comput. Vis., 2019."
+
 import tensorflow as tf
 import math
 
@@ -74,7 +76,6 @@ def encoder(input_data, is_training=True, keep_prob=0.7, return_layers=False):
         filters = 64
         filter_size = (3, 3)
         
-        #h0 = conv2d_Inception(h0, filters, max_filter_size=7, scope='gen_h0')
         h1 = G_conv_bn_relu(h0, filters, filter_size, stride=1, training=is_training, bn=True, scope='gen_h1')
         h2 = G_conv_bn_relu(h1, 128, filter_size, stride=2, training=is_training, bn=True, scope='gen_h2')
         h3 = G_conv_bn_relu(h2, 256, filter_size, stride=2, training=is_training, bn=True, scope='gen_h3')

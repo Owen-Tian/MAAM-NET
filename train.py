@@ -46,7 +46,7 @@ def train(training_raw,max_epoch, start_model_idx=0, batch_size=18,mem_capacity=
 
     #obtain recons images and flows
     recons_images,recons_flows=decoder(latent,h=h,w=w,c=c)
-    recons_images_wo_mem,recons_flows_wo_mem=decoder_wo_mem(z,h=h,w=w,c=c)
+    #recons_images_wo_mem,recons_flows_wo_mem=decoder_wo_mem(z,h=h,w=w,c=c)
     
     #if need discriminator
     #dis_true,dis_true_logits=Discriminator(inputs_images,inputs_flows)
@@ -57,12 +57,12 @@ def train(training_raw,max_epoch, start_model_idx=0, batch_size=18,mem_capacity=
     loss_recons_flow=tf.reduce_mean(tf.abs(recons_flows-inputs_flows))
 
 
-    loss_recons_image_wo_mem=tf.reduce_mean(tf.square(recons_images_wo_mem-inputs_images))
-    loss_recons_flow_wo_mem=tf.reduce_mean(tf.abs(recons_flows_wo_mem-inputs_flows))
+    #loss_recons_image_wo_mem=tf.reduce_mean(tf.square(recons_images_wo_mem-inputs_images))
+    #loss_recons_flow_wo_mem=tf.reduce_mean(tf.abs(recons_flows_wo_mem-inputs_flows))
     
     #find the RGB loss in the batch
     loss_recons_image_batch=tf.reduce_mean(tf.square(recons_images-inputs_images),axis=(1,2,3))
-    loss_recons_image_batch_wo_mem=tf.reduce_mean(tf.square(recons_images_wo_mem-inputs_images),axis=(1,2,3))
+    #loss_recons_image_batch_wo_mem=tf.reduce_mean(tf.square(recons_images_wo_mem-inputs_images),axis=(1,2,3))
 
     #loss_grad
     #dy1, dx1 = tf.image.image_gradients(recons_images)
@@ -80,7 +80,7 @@ def train(training_raw,max_epoch, start_model_idx=0, batch_size=18,mem_capacity=
     #loss= loss_recons_image  + 0.0003*loss_sparsity + 0.001*loss_latent
     #loss= 2*loss_recons_flow + 0.0003*loss_sparsity + 0.001*loss_latent
     loss= loss_recons_image + 2*loss_recons_flow +  0.001*loss_latent+0.0003*loss_sparsity
-    loss_wo_mem=loss_recons_image_wo_mem+2*loss_recons_flow_wo_mem
+    #loss_wo_mem=loss_recons_image_wo_mem+2*loss_recons_flow_wo_mem
     #learning_rates
     #learning_rates=tf.train.exponential_decay(learning_rate=0.0001,global_step=1000,decay_steps=100,decay_rate=1./10,staircase=True,name='ls_dc')
     learning_rates=lr

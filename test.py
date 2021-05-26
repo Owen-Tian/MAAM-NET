@@ -219,15 +219,15 @@ def test(testing_raw, start_model_idx=0, mem_capacity=2000, batch_size=9,dataset
         results_flow_all=results_flow_all-min(results_flow_all)
         results_fusion_all=results_fusion_all-min(results_fusion_all)
 
-        image_score=1.-results_image_all/max(results_image_all)
-        flow_score=1.-results_flow_all/max(results_flow_all)
-        fusion_score=1.-results_fusion_all/max(results_fusion_all)
+        image_score=results_image_all/max(results_image_all)
+        flow_score=results_flow_all/max(results_flow_all)
+        fusion_score=results_fusion_all/max(results_fusion_all)
 
         gt=np.load('gt_'+dataset+'.npy')
         
-        print(' testing AUC of image only :',inference(gt,image_score,0))
-        print(' testing AUC of flow  only :',inference(gt,flow_score,0))
-        print(' testing AUC of   fusion   :',inference(gt,fusion_score,0))
+        print(' testing AUC of image only :',inference(gt,image_score,1))
+        print(' testing AUC of flow  only :',inference(gt,flow_score,1))
+        print(' testing AUC of   fusion   :',inference(gt,fusion_score,1))
         #----------------------------------------------------------------
 
 

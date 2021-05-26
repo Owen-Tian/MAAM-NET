@@ -29,40 +29,6 @@ def conv_transpose(x, output_shape, filter_size=3, stride=2,scope=None, return_f
             return convt, w, b
         return convt
 
-def conv2d_Inception(x, out_channel, max_filter_size=7, scope=None):
-    assert max_filter_size % 2 == 1 and max_filter_size < 8
-    n_branch = (max_filter_size+1) // 2
-    assert out_channel % n_branch == 0
-    nf_branch = out_channel // n_branch
-    with tf.variable_scope(scope):
-        # 1x1
-        s1_11 = conv2d(x, nf_branch, filter_size=(1, 1), scope='s1_11')
-        if n_branch == 1:
-            return s1_11
-        # 3x3
-        s3_11 = conv2d(x, nf_branch, filter_size=(1, 1), scope='s3_11')
-        s3_1n = conv2d(s3_11, nf_branch, filter_size=(1, 3), scope='s3_1n')
-        s3_n1 = conv2d(s3_1n, nf_branch, filter_size=(3, 1), scope='s3_n1')
-        if n_branch == 2:
-            return tf.concat([s1_11, s3_n1], -1)
-        # 5x5
-        s5_11 = conv2d(x, nf_branch, filter_size=(1, 1), scope='s5_11')
-        s5_1n = conv2d(s5_11, nf_branch, filter_size=(1, 3), scope='s5_1n_1')
-        s5_n1 = conv2d(s5_1n, nf_branch, filter_size=(3, 1), scope='s5_n1_1')
-        s5_1n = conv2d(s5_n1, nf_branch, filter_size=(1, 3), scope='s5_1n_2')
-        s5_n1 = conv2d(s5_1n, nf_branch, filter_size=(3, 1), scope='s5_n1_2')
-        if n_branch == 3:
-            return tf.concat([s1_11, s3_n1, s5_n1], -1)
-        # 7x7
-        s7_11 = conv2d(x, nf_branch, filter_size=(1, 1), scope='s7_11')
-        s7_1n = conv2d(s7_11, nf_branch, filter_size=(1, 3), scope='s7_1n_1')
-        s7_n1 = conv2d(s7_1n, nf_branch, filter_size=(3, 1), scope='s7_n1_1')
-        s7_1n = conv2d(s7_n1, nf_branch, filter_size=(1, 3), scope='s7_1n_2')
-        s7_n1 = conv2d(s7_1n, nf_branch, filter_size=(3, 1), scope='s7_n1_2')
-        s7_1n = conv2d(s7_n1, nf_branch, filter_size=(1, 3), scope='s7_1n_3')
-        s7_n1 = conv2d(s7_1n, nf_branch, filter_size=(3, 1), scope='s7_n1_3')
-        return tf.concat([s1_11, s3_n1, s5_n1, s7_n1], -1)
-
 def Discriminator(frame_true, flow_hat, is_training=True, reuse=False, return_middle_layers=False):
 
     def D_conv_bn_active(x, out_channel, filter_size, stride=2, training=False, bn=True, active=leaky_relu, scope=None):
